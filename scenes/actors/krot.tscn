@@ -1,0 +1,147 @@
+[gd_scene load_steps=20 format=2]
+
+[ext_resource path="res://gfx/krot_south.res" type="SpriteFrames" id=1]
+[ext_resource path="res://scenes/actors/krot.gd" type="Script" id=2]
+[ext_resource path="res://gfx/earth_debris.png" type="Texture" id=3]
+[ext_resource path="res://gfx/mound.png" type="Texture" id=4]
+[ext_resource path="res://sounds/dig1.wav" type="AudioStream" id=5]
+[ext_resource path="res://sounds/dig2.wav" type="AudioStream" id=6]
+[ext_resource path="res://sounds/dig3.wav" type="AudioStream" id=7]
+[ext_resource path="res://random_sound.gd" type="Script" id=8]
+[ext_resource path="res://sounds/dig4.wav" type="AudioStream" id=9]
+[ext_resource path="res://sounds/harvest.wav" type="AudioStream" id=10]
+[ext_resource path="res://sounds/eat.wav" type="AudioStream" id=11]
+[ext_resource path="res://gfx/corn_debris.png" type="Texture" id=12]
+[ext_resource path="res://sounds/mole_die.wav" type="AudioStream" id=13]
+
+[sub_resource type="Curve" id=29]
+_data = [ Vector2( 0, 0.995454 ), 0.0, -0.991636, 0, 1, Vector2( 0.990099, 0.0136364 ), -0.108022, 0.0, 0, 0 ]
+
+[sub_resource type="CircleShape2D" id=14]
+
+[sub_resource type="CanvasItemMaterial" id=27]
+light_mode = 1
+particles_animation = true
+particles_anim_h_frames = 2
+particles_anim_v_frames = 2
+particles_anim_loop = false
+
+[sub_resource type="Curve" id=28]
+_data = [ Vector2( 0, 0.978568 ), 0.0, 0.0, 0, 0, Vector2( 0.970297, 0.00584054 ), -3.46083, 0.0, 0, 0 ]
+
+[sub_resource type="CanvasItemMaterial" id=1]
+particles_animation = true
+particles_anim_h_frames = 2
+particles_anim_v_frames = 2
+particles_anim_loop = false
+
+[sub_resource type="Curve" id=2]
+_data = [ Vector2( 0, 0.970295 ), 0.0, 0.0, 0, 0, Vector2( 0.985149, 0 ), -3.19316, 0.0, 0, 0 ]
+
+[node name="Krot" type="KinematicBody2D"]
+collision_layer = 19
+collision_mask = 7
+script = ExtResource( 2 )
+
+[node name="MoundParticles" type="CPUParticles2D" parent="."]
+position = Vector2( 0, -6 )
+z_index = -1
+z_as_relative = false
+emitting = false
+amount = 16
+lifetime_randomness = 0.32
+local_coords = false
+texture = ExtResource( 4 )
+emission_shape = 1
+emission_sphere_radius = 1.0
+gravity = Vector2( 0, 0 )
+scale_amount_curve = SubResource( 29 )
+
+[node name="AnimatedSprite" type="AnimatedSprite" parent="."]
+position = Vector2( 0, -16 )
+frames = ExtResource( 1 )
+animation = "stand"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2( 0, -11 )
+shape = SubResource( 14 )
+
+[node name="DigParticles" type="CPUParticles2D" parent="."]
+material = SubResource( 27 )
+position = Vector2( 0, -6 )
+emitting = false
+amount = 24
+lifetime = 0.5
+explosiveness = 0.14
+lifetime_randomness = 0.64
+texture = ExtResource( 3 )
+emission_shape = 1
+emission_sphere_radius = 4.52
+spread = 180.0
+gravity = Vector2( 0, 0 )
+initial_velocity = 82.56
+initial_velocity_random = 0.54
+angular_velocity = 317.06
+angular_velocity_random = 0.54
+linear_accel = -27.52
+scale_amount_curve = SubResource( 28 )
+anim_offset = 1.0
+anim_offset_random = 1.0
+
+[node name="DigSounds" type="Node2D" parent="."]
+position = Vector2( 0, -16 )
+script = ExtResource( 8 )
+
+[node name="Dig1" type="AudioStreamPlayer2D" parent="DigSounds"]
+stream = ExtResource( 5 )
+bus = "SFX"
+
+[node name="Dig2" type="AudioStreamPlayer2D" parent="DigSounds"]
+stream = ExtResource( 6 )
+bus = "SFX"
+
+[node name="DiveSounds" type="Node2D" parent="."]
+position = Vector2( 0, -16 )
+script = ExtResource( 8 )
+
+[node name="Dig3" type="AudioStreamPlayer2D" parent="DiveSounds"]
+stream = ExtResource( 7 )
+bus = "SFX"
+
+[node name="Dig4" type="AudioStreamPlayer2D" parent="DiveSounds"]
+stream = ExtResource( 9 )
+bus = "SFX"
+
+[node name="HarvestSound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource( 10 )
+volume_db = 4.602
+bus = "SFX"
+
+[node name="EatSound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource( 11 )
+bus = "SFX"
+
+[node name="EatParticles" type="CPUParticles2D" parent="."]
+material = SubResource( 1 )
+position = Vector2( 0, -12 )
+emitting = false
+amount = 6
+explosiveness = 0.4
+lifetime_randomness = 0.41
+texture = ExtResource( 12 )
+direction = Vector2( 0, -1 )
+spread = 63.17
+initial_velocity = 27.52
+angular_velocity = -416.15
+angular_velocity_random = 0.44
+angle = 158.4
+angle_random = 0.72
+scale_amount_curve = SubResource( 2 )
+hue_variation = 0.46
+hue_variation_random = 1.0
+anim_offset = 0.94
+anim_offset_random = 1.0
+
+[node name="DieSound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource( 13 )
+bus = "SFX"

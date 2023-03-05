@@ -1,0 +1,8 @@
+Features
+- Death screen score & new records
+- Game instructions and credits
+- Progressive difficulty
+- Music
+
+Tweaks
+- Digging player can go under farmers
