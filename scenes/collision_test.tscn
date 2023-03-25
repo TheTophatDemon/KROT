@@ -1,0 +1,37 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://scenes/collision_test.gd" type="Script" id=1]
+
+[sub_resource type="CircleShape2D" id=1]
+
+[node name="Node2D" type="Node2D"]
+
+[node name="A" type="KinematicBody2D" parent="."]
+collision_mask = 2
+script = ExtResource( 1 )
+velocity = Vector2( 5, 0 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="A"]
+shape = SubResource( 1 )
+
+[node name="Polygon2D" type="Polygon2D" parent="A"]
+color = Color( 1, 0, 0, 1 )
+polygon = PoolVector2Array( -9, 5, -10, 1, -10, -3, -7, -7, -2, -10, 3, -10, 7, -8, 9, -5, 9, -1, 8, 5, 4, 9, -1, 10, -5, 9 )
+
+[node name="B" type="KinematicBody2D" parent="."]
+position = Vector2( 69, 1 )
+collision_mask = 16
+script = ExtResource( 1 )
+velocity = Vector2( -5, 0 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="B"]
+shape = SubResource( 1 )
+
+[node name="Polygon2D" type="Polygon2D" parent="B"]
+color = Color( 0, 0.109804, 1, 1 )
+polygon = PoolVector2Array( -9, 5, -10, 1, -10, -3, -7, -7, -2, -10, 3, -10, 7, -8, 9, -5, 9, -1, 8, 5, 4, 9, -1, 10, -5, 9 )
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2( 33, 1 )
+current = true
+zoom = Vector2( 0.25, 0.25 )

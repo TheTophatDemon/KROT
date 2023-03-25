@@ -1,6 +1,7 @@
 extends Node2D
 
 const PREFAB_CROP = preload("res://scenes/objects/crop.tscn")
+const PREFAB_FARMER = preload("res://scenes/actors/farmer.tscn")
 
 const SEED_PLANT_INTERVAL = 5
 
@@ -10,7 +11,7 @@ const OBSTACLE_GRID_SPACING = Vector2(64.0, 64.0)
 const OBSTACLES = [
 	[preload("res://scenes/objects/tree.tscn"), 0.2],
 	[preload("res://scenes/objects/stone.tscn"), 0.1],
-	[preload("res://scenes/actors/farmer.tscn"), 0.05]	
+	#[preload("res://scenes/actors/farmer.tscn"), 0.05]	
 ]
 
 onready var ground_tiles = $Ground
@@ -18,6 +19,8 @@ onready var soil_tiles = $Soil
 onready var ysort = $YSort
 
 var seed_plant_timer:float = 999.0
+var farmer_spawn_timer:float = 30.0
+var farmer_phase:int = 0
 
 func generate_map(cols, rows):
 	var xs = -int(cols/2)
@@ -135,6 +138,42 @@ func spawn_crops(density:float, random_growth:bool = false):
 				ysort.add_child(crop)
 				crop.position = w_pos
 
+# Places a farmer in a random off-screen position.			
+func spawn_farmer():
+	var test_circle = CircleShape2D.new()
+	test_circle.radius = 16.0
+	var test_params = Physics2DShapeQueryParameters.new()
+	test_params.set_shape(test_circle)
+	test_params.collide_with_areas = true
+	test_params.collide_with_bodies = true
+	test_params.collision_layer = Globals.COL_BIT_HUMANS | Globals.COL_BIT_SOLIDS
+	var space_state = get_world_2d().direct_space_state
+	
+	var camera = get_node("%Camera")
+	var camera_rect = get_viewport().get_visible_rect()
+	camera_rect.size *= camera.zoom
+	camera_rect.position = camera.global_position - camera_rect.size / 2.0
+	print(camera_rect)
+	
+	var attempts = 0
+	while attempts < 50:
+		attempts += 1
+		var rect = soil_tiles.get_used_rect()
+		var pos = rect.position + Vector2(rand_range(0.0, rect.size.x), rand_range(0.0, rect.size.y))
+		
+		# Skip if it's on camera
+		if camera_rect.has_point(pos):
+			continue
+		
+		# Place if there's nothing intersecting
+		test_params.transform = Transform2D(Vector2.RIGHT, Vector2.DOWN, pos)
+		var blocking = space_state.intersect_shape(test_params)
+		if blocking.size() == 0:
+			var farmer = PREFAB_FARMER.instance()
+			ysort.add_child(farmer)
+			farmer.position = pos
+			break
+	
 func _ready():
 	randomize()
 	generate_map(64, 64)
@@ -162,3 +201,15 @@ func _process(delta):
 		else:
 			spawn_crops(0.01, false)
 		seed_plant_timer = 0.0
+
+	farmer_spawn_timer -= delta
+	if farmer_spawn_timer < 0.0:
+		if farmer_phase < 3:
+			farmer_spawn_timer = 30.0
+			spawn_farmer()
+		elif farmer_phase < 15:
+			spawn_farmer()
+			farmer_spawn_timer = 60.0
+		else:
+			farmer_spawn_timer = INF
+		farmer_phase += 1

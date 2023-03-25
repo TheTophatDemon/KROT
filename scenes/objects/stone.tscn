@@ -18,3 +18,5 @@ rotation = 1.5708
 shape = SubResource( 1 )
 
 [node name="NavigationObstacle2D" type="NavigationObstacle2D" parent="."]
+estimate_radius = false
+radius = 16.0

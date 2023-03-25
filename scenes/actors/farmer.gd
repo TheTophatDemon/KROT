@@ -10,12 +10,14 @@ const SIGHT_LENGTH = 192.0
 const SHOOT_DISTANCE = 160.0 #Distance to target required to begin shooting
 const BULLET_SPEED = 256.0
 const BULLET_DISTANCE = 16.0 #Distance from the eyes that the bullets spawn at
+const STUMBLE_TIME = 0.5
 
 enum State {
 	WANDER,
 	ALERT,
 	HUNT,
-	SHOOT
+	SHOOT,
+	STUMBLE
 }
 
 onready var agent = $NavigationAgent2D
@@ -32,6 +34,7 @@ var shoot_timer:float = 0.0
 var last_seen_target_pos:Vector2
 var target_dist:float = 9999.0
 var target_in_sight = false
+var stumble_timer:float = 0.0
 
 func _ready():
 	sprite_frames = {
@@ -56,10 +59,15 @@ func _set_nav_velocity(safe_velocity:Vector2):
 	
 func _on_animation_finished(anim_name:String, anim_player:AnimationPlayer):
 	if anim_player == exclam_anim and anim_name == "fade_in":
-		state = State.HUNT
+		change_state(State.HUNT)
 	elif anim_player == null:
 		if state == State.SHOOT and anim_state == "shoot":
-			state = State.HUNT
+			change_state(State.HUNT)
+			
+func _on_bullet_hit(bullet):
+	if bullet.shooter != self:
+		change_state(State.STUMBLE)
+		stumble_timer = STUMBLE_TIME
 			
 func shoot():
 	gun_sounds.play()
@@ -71,8 +79,22 @@ func shoot():
 		bullet.velocity = sight.cast_to.rotated(spread  * i).normalized() * BULLET_SPEED
 		bullet.shooter = self
 	
-func _process(delta):
-	#Movement
+func change_state(new_state:int):
+	
+	match new_state:
+		State.STUMBLE:
+			input = Vector2.ZERO
+			velocity = Vector2.ZERO
+		State.ALERT:
+			input = Vector2.ZERO
+			exclam_anim.play("fade_in")
+			alert_sound.play()
+		State.SHOOT:
+			input = Vector2.ZERO
+	
+	state = new_state
+	
+func pursue_target(delta):
 	if !agent.is_target_reached():
 		var new_dir = (agent.get_next_location() - global_position).normalized()
 		if input != Vector2.ZERO:
@@ -82,7 +104,8 @@ func _process(delta):
 			input = new_dir
 	else:
 		input = Vector2.ZERO
-		
+	
+func _process(delta):
 	#Align sight to nearest player
 	var player = get_tree().get_nodes_in_group(Globals.GROUP_PLAYERS)[0]
 	target_in_sight = false	
@@ -104,6 +127,7 @@ func _process(delta):
 		
 	match state:
 		State.WANDER:
+			pursue_target(delta)
 			wander_timer -= delta
 			if wander_timer <= 0.0 or !agent.is_target_reachable():
 				wander_timer = rand_range(2.0, 6.0)
@@ -112,29 +136,32 @@ func _process(delta):
 			if target_in_sight:
 				alert += delta
 				if alert > ALERT_THRESHOLD:
-					#alert = 0.0
-					state = State.ALERT
-					exclam_anim.play("fade_in")
-					alert_sound.play()
+					change_state(State.ALERT)
 			else:
 				alert = max(0.0, alert - delta)
-		State.ALERT, State.SHOOT:
-			input = Vector2.ZERO
+		State.STUMBLE:
+			stumble_timer -= delta
+			if stumble_timer <= 0:
+				stumble_timer = 0.0
+				change_state(State.WANDER)
 		State.HUNT:
+			pursue_target(delta)
 			if target_dist < SHOOT_DISTANCE:
 				shoot_timer -= delta
 				if shoot_timer < 0.0 and target_in_sight:
 					shoot_timer = rand_range(1.0, 2.0)
-					state = State.SHOOT
+					change_state(State.SHOOT)
 					#Shoot bullets after some time
 					var _err = get_tree().create_timer(0.5).connect("timeout", self, "shoot")
-			if agent.is_target_reached() and !target_in_sight:
-				state = State.WANDER
+			if agent.is_target_reached():
+				change_state(State.WANDER)
 	
 	#Animation states
 	match state:
 		State.SHOOT:
 			anim_state = "shoot"
+		State.STUMBLE:
+			anim_state = "stumble"
 		_:
 			var walking = (velocity.length_squared() > WALK_THRESHOLD)
 			anim_state = "walk" if walking else "stand"

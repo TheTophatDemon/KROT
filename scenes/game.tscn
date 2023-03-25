@@ -55,6 +55,7 @@ margin_right = -200.0
 margin_bottom = -150.0
 
 [node name="Krot" parent="YSort" groups=["players"] instance=ExtResource( 1 )]
+unique_name_in_owner = true
 
 [node name="Hideout" parent="YSort" instance=ExtResource( 3 )]
 player_path = NodePath("../Krot")

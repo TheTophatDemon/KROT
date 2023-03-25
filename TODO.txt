@@ -1,8 +1,9 @@
 Features
-- Death screen score & new records
+- High score
 - Game instructions and credits
-- Progressive difficulty
 - Music
 
 Tweaks
-- Digging player can go under farmers
+- Digging player can knock over farmers
+- Pathfinding improvement
+- Y sort issue??

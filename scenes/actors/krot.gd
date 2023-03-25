@@ -6,10 +6,12 @@ const WALK_THRESHOLD = 10.0
 const DIG_SOUND_FREQ = [0.1, 0.1] #Min, max
 const DIVE_TIME = 0.25
 const EAT_TIME = 1.5
-const HUNGER_RATE = 1.0 / 30.0
-const HUNGER_DECREASE_RATE = 2.0 / 30.0 #The amount that hunger decreases after eating
+const HUNGER_RATE = 1.0 / 60.0
+const HUNGER_DECREASE_RATE = 4.0 / 60.0 #The amount that hunger decreases after eating
 const OVERGROUND_WALK_SPEED = 160.0
 const UNDERGROUND_WALK_SPEED = 128.0
+
+signal die()
 
 onready var dig_particles = $DigParticles
 onready var mound_particles = $MoundParticles
@@ -37,6 +39,7 @@ var hunger:float = 0.0 #The player dies when this reaches 1.0
 var god_mode = false
 
 var score:int = 0
+var life_time:float = 0.0
 
 func _ready():
 	sprite_frames = {
@@ -101,13 +104,17 @@ func change_state(new_state:int):
 			State.DYING:
 				anim_spr.play("die")
 				die_sound.play()
-				get_node("%GUI")._on_player_death()
+				emit_signal("die")
+				collision_layer = 0
+				collision_mask = 0
 			State.DEFAULT:
 				anim_spr.visible = true
 				set_collision_layer_bit(Globals.COL_BIT_SURFACE, true)
+				set_collision_mask_bit(Globals.COL_BIT_HUMANS, true)
 			State.UNDERGROUND:
 				anim_spr.visible = false
 				set_collision_layer_bit(Globals.COL_BIT_SURFACE, false)
+				set_collision_mask_bit(Globals.COL_BIT_HUMANS, false)
 				max_speed = UNDERGROUND_WALK_SPEED
 				
 	if state != State.DYING: #Nobody can escape death.
@@ -125,7 +132,8 @@ func _process(delta):
 				change_state(State.DYING)
 	else:
 		hunger = 0.0
-	get_node("%GUI").hunger_value = hunger
+	
+	life_time += delta
 	
 	if state != State.DYING:
 		#Diving in and out of underground
