@@ -93,7 +93,7 @@ tracks/1/keys = {
 "values": [ Vector2( -1, -42 ), Vector2( -1, -49 ), Vector2( -1, -46 ) ]
 }
 
-[node name="Farmer" type="KinematicBody2D"]
+[node name="Farmer" type="KinematicBody2D" groups=["farmers"]]
 collision_layer = 9
 collision_mask = 52
 script = ExtResource( 2 )

@@ -12,6 +12,7 @@ const OVERGROUND_WALK_SPEED = 160.0
 const UNDERGROUND_WALK_SPEED = 128.0
 
 signal die()
+signal deposited_crop()
 
 onready var dig_particles = $DigParticles
 onready var mound_particles = $MoundParticles
@@ -31,11 +32,12 @@ enum State {
 }
 
 var diving = false
-var state = State.DEFAULT
+var state = State.CARRYING
 
 var dig_sound_timer = 0.0
 
-var hunger:float = 0.0 #The player dies when this reaches 1.0
+#The player dies when this reaches 1.0
+var hunger:float = 0.25 
 var god_mode = false
 
 var score:int = 0
@@ -50,7 +52,7 @@ func _ready():
 	}
 	
 	accel = 2048.0
-	friction = 256.0
+	friction = 512.0
 	max_speed = OVERGROUND_WALK_SPEED
 	
 	var _err = anim_spr.connect("animation_finished", self, "_on_anim_finished")
@@ -202,6 +204,7 @@ func is_carrying():
 func deposit_crop():
 	if state == State.CARRYING:
 		change_state(State.DEFAULT)
+		emit_signal("deposited_crop")
 		score += 1
 
 func _input(event):

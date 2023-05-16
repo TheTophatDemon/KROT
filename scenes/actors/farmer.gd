@@ -8,7 +8,7 @@ const ALERT_THRESHOLD = 0.25
 const HALF_FOV = deg2rad(90.0)
 const SIGHT_LENGTH = 192.0
 const SHOOT_DISTANCE = 160.0 #Distance to target required to begin shooting
-const BULLET_SPEED = 256.0
+const BULLET_SPEED = 192.0
 const BULLET_DISTANCE = 16.0 #Distance from the eyes that the bullets spawn at
 const STUMBLE_TIME = 0.5
 

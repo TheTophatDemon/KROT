@@ -14,12 +14,14 @@ const OBSTACLES = [
 	#[preload("res://scenes/actors/farmer.tscn"), 0.05]	
 ]
 
+const MAX_FARMERS = 30
+
 onready var ground_tiles = $Ground
 onready var soil_tiles = $Soil
 onready var ysort = $YSort
 
 var seed_plant_timer:float = 999.0
-var farmer_spawn_timer:float = 30.0
+var farmer_spawn_timer:float = 0.0
 var farmer_phase:int = 0
 
 func generate_map(cols, rows):
@@ -153,7 +155,6 @@ func spawn_farmer():
 	var camera_rect = get_viewport().get_visible_rect()
 	camera_rect.size *= camera.zoom
 	camera_rect.position = camera.global_position - camera_rect.size / 2.0
-	print(camera_rect)
 	
 	var attempts = 0
 	while attempts < 50:
@@ -186,12 +187,22 @@ func _ready():
 	camera.limit_top = ground_rect.position.y * ground_tiles.cell_size.y
 	camera.limit_right = ground_rect.end.x * ground_tiles.cell_size.x
 	camera.limit_bottom = ground_rect.end.y * ground_tiles.cell_size.y
+	
+	var player = get_node("%Krot")
+	player.connect("deposited_crop", self, "_on_player_deposit_crop")
+
+func _on_player_deposit_crop():
+	# Turn on the farmer spawning once the player deposits the first crop
+	if farmer_phase <= 0:
+		farmer_phase = 1
+		farmer_spawn_timer = 0.0
 
 func get_random_soil_tile():
 	var tiles = soil_tiles.get_used_cells()
 	return tiles[randi() % tiles.size()] * soil_tiles.cell_size + (soil_tiles.cell_size / 2.0)
 
 func _process(delta):
+	
 	#Plant new crops at random spots
 	seed_plant_timer += delta
 	if seed_plant_timer > SEED_PLANT_INTERVAL:
@@ -202,14 +213,18 @@ func _process(delta):
 			spawn_crops(0.01, false)
 		seed_plant_timer = 0.0
 
-	farmer_spawn_timer -= delta
-	if farmer_spawn_timer < 0.0:
-		if farmer_phase < 3:
-			farmer_spawn_timer = 30.0
+	if farmer_phase > 0:
+		# Farmer phase is 0 until the player deposits the first crop
+		# So that nothing will hurt the player until the player figures out the goal of the game.
+		farmer_spawn_timer -= delta
+		var farmers = get_tree().get_nodes_in_group(Globals.GROUP_FARMERS)
+		if len(farmers) < MAX_FARMERS and farmer_spawn_timer < 0.0:
 			spawn_farmer()
-		elif farmer_phase < 15:
-			spawn_farmer()
-			farmer_spawn_timer = 60.0
-		else:
-			farmer_spawn_timer = INF
-		farmer_phase += 1
+			
+			if farmer_phase < 4:
+				farmer_spawn_timer = 15.0
+			#elif farmer_phase < 15:
+			else:
+				farmer_spawn_timer = 60.0
+			
+			farmer_phase += 1
