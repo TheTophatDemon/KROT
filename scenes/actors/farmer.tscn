@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=2]
+[gd_scene load_steps=15 format=2]
 
 [ext_resource path="res://gfx/farmer_south.res" type="SpriteFrames" id=1]
 [ext_resource path="res://scenes/actors/farmer.gd" type="Script" id=2]
@@ -8,6 +8,8 @@
 [ext_resource path="res://sounds/gun1.wav" type="AudioStream" id=6]
 [ext_resource path="res://sounds/gun2.wav" type="AudioStream" id=7]
 [ext_resource path="res://random_sound.gd" type="Script" id=8]
+[ext_resource path="res://sounds/farmer_hurt1.wav" type="AudioStream" id=9]
+[ext_resource path="res://sounds/farmer_hurt2.wav" type="AudioStream" id=10]
 
 [sub_resource type="CircleShape2D" id=14]
 
@@ -110,7 +112,10 @@ shape = SubResource( 14 )
 [node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
 path_desired_distance = 16.0
 target_desired_distance = 64.0
+path_max_distance = 10.0
 avoidance_enabled = true
+neighbor_dist = 100.0
+time_horizon = 1.0
 
 [node name="Exclamation" type="Sprite" parent="."]
 modulate = Color( 1, 1, 1, 0 )
@@ -123,12 +128,15 @@ anims/default = SubResource( 16 )
 anims/fade_in = SubResource( 17 )
 
 [node name="Sight" type="RayCast2D" parent="."]
-position = Vector2( 0, -27 )
+position = Vector2( 0, -4.034 )
 enabled = true
 cast_to = Vector2( 128, 0 )
 collision_mask = 49
 
-[node name="AlertSound" type="AudioStreamPlayer2D" parent="."]
+[node name="AlertSound" type="Node2D" parent="."]
+script = ExtResource( 8 )
+
+[node name="AlertSound" type="AudioStreamPlayer2D" parent="AlertSound"]
 stream = ExtResource( 4 )
 bus = "SFX"
 
@@ -145,4 +153,18 @@ bus = "SFX"
 
 [node name="Gun3" type="AudioStreamPlayer2D" parent="GunSounds"]
 stream = ExtResource( 5 )
+bus = "SFX"
+
+[node name="Shooter" type="Node2D" parent="."]
+position = Vector2( 0, -20 )
+
+[node name="HurtSounds" type="Node2D" parent="."]
+script = ExtResource( 8 )
+
+[node name="Hurt1" type="AudioStreamPlayer2D" parent="HurtSounds"]
+stream = ExtResource( 9 )
+bus = "SFX"
+
+[node name="Hurt2" type="AudioStreamPlayer2D" parent="HurtSounds"]
+stream = ExtResource( 10 )
 bus = "SFX"

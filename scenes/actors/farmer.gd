@@ -4,7 +4,7 @@ const BULLET_PREFAB = preload("res://scenes/objects/bullet.tscn")
 
 const WALK_THRESHOLD = 10.0
 const WANDER_RANGE = 256.0
-const ALERT_THRESHOLD = 0.25
+const ALERT_THRESHOLD = 0.5
 const HALF_FOV = deg2rad(90.0)
 const SIGHT_LENGTH = 192.0
 const SHOOT_DISTANCE = 160.0 #Distance to target required to begin shooting
@@ -26,6 +26,7 @@ onready var exclam_anim = $Exclamation/AnimationPlayer
 
 onready var alert_sound = $AlertSound
 onready var gun_sounds = $GunSounds
+onready var hurt_sounds = $HurtSounds
 
 var state = State.WANDER
 var wander_timer:float = 0.0
@@ -80,7 +81,7 @@ func shoot():
 	for i in [-1, 0, 1]:
 		var bullet = BULLET_PREFAB.instance()
 		get_parent().add_child(bullet)
-		bullet.global_position = sight.global_position + SPRITE_DIR_VECTORS[sprite_direction] * BULLET_DISTANCE
+		bullet.global_position = $Shooter.global_position + SPRITE_DIR_VECTORS[sprite_direction] * BULLET_DISTANCE
 		bullet.velocity = sight.cast_to.rotated(spread  * i).normalized() * BULLET_SPEED
 		bullet.shooter = self
 	
@@ -90,6 +91,7 @@ func change_state(new_state:int):
 		State.STUMBLE:
 			input = Vector2.ZERO
 			velocity = Vector2.ZERO
+			hurt_sounds.play()
 		State.ALERT:
 			input = Vector2.ZERO
 			exclam_anim.play("fade_in")
@@ -111,14 +113,14 @@ func pursue_target(delta):
 		input = Vector2.ZERO
 	
 func _process(delta):
-	#Align sight to nearest player
+	#Align sight to the player
 	var player = get_tree().get_nodes_in_group(Globals.GROUP_PLAYERS)[0]
 	target_in_sight = false	
 	if player.get_collision_layer_bit(Globals.COL_BIT_SURFACE):
 		var diff = ((player.global_position + Vector2.UP * 16.0) - sight.global_position)
 		target_dist = diff.length()
 		var in_fov = abs(diff.angle_to(SPRITE_DIR_VECTORS[sprite_direction])) < HALF_FOV
-		if (in_fov or target_dist < 64.0 or state == State.HUNT) and target_dist > 0.0:
+		if (in_fov or target_dist < 32.0 or state == State.HUNT) and target_dist > 0.0:
 			sight.cast_to = SIGHT_LENGTH * diff / target_dist
 			sight.enabled = true
 			last_seen_target_pos = player.global_position
@@ -148,7 +150,7 @@ func _process(delta):
 			stumble_timer -= delta
 			if stumble_timer <= 0:
 				stumble_timer = 0.0
-				change_state(State.WANDER)
+				change_state(State.HUNT)
 		State.HUNT:
 			pursue_target(delta)
 			if target_dist < SHOOT_DISTANCE:
@@ -159,7 +161,11 @@ func _process(delta):
 					#Shoot bullets after some time
 					var _err = get_tree().create_timer(0.5).connect("timeout", self, "shoot")
 			if agent.is_target_reached():
-				change_state(State.WANDER)
+				alert = max(0.0, alert - delta)
+				if alert <= 0.0:
+					change_state(State.WANDER)
+			else:
+				alert = ALERT_THRESHOLD
 	
 	#Animation states
 	match state:

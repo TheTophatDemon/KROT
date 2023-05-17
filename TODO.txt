@@ -1,11 +1,7 @@
 Features
 - Hit points
-- Farmer stun noise
 - High score
-- Leaderboard
 - Game instructions and credits
 - Music
-
-Tweaks
-- Pathfinding improvement
-- Y sort issue
+- Controller Support
+- Leaderboard

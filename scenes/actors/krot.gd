@@ -43,6 +43,8 @@ var god_mode = false
 var score:int = 0
 var life_time:float = 0.0
 
+var dive_check_shape:Shape2D
+
 func _ready():
 	sprite_frames = {
 		SpriteDirection.NORTH: preload("res://gfx/krot_north.res"),
@@ -50,6 +52,11 @@ func _ready():
 		SpriteDirection.EAST: preload("res://gfx/krot_east.res"),
 		SpriteDirection.WEST: preload("res://gfx/krot_west.res")
 	}
+	
+	# The shape used to detect if something above ground is preventing us from emerging.
+	dive_check_shape = CircleShape2D.new()
+	# Slightly larger than the player's radius in order to prevent clipping bugs.
+	dive_check_shape.radius = 11
 	
 	accel = 2048.0
 	friction = 512.0
@@ -142,23 +149,26 @@ func _process(delta):
 	if state != State.DYING:
 		#Diving in and out of underground
 		if Input.is_action_just_pressed("dive") and not diving and state != State.EATING: 
-			#Check if there is a farmer above the player
-			var space_state = get_world_2d().direct_space_state
+			var can_dive = true
+			if state == State.UNDERGROUND:
+				#Check if there is a farmer above the player
+				var space_state = get_world_2d().direct_space_state
+				
+				var params = Physics2DShapeQueryParameters.new()
+				params.shape_rid = dive_check_shape
+				params.collide_with_bodies = true
+				params.collision_layer = (1 << Globals.COL_BIT_HUMANS) | (1 << Globals.COL_BIT_SOLIDS)
+				params.transform = $CollisionShape2D.global_transform
+				var intersecting_objs = space_state.intersect_shape(params)
+				
+				#Stun farmers
+				for result in intersecting_objs:
+					can_dive = false
+					var obj = result["collider"]
+					if obj.has_method("_on_dug_under"):
+						obj._on_dug_under()
 			
-			var params = Physics2DShapeQueryParameters.new()
-			params.shape_rid = $CollisionShape2D.shape
-			params.collide_with_bodies = true
-			params.collision_layer = (1 << Globals.COL_BIT_HUMANS) | (1 << Globals.COL_BIT_SOLIDS)
-			params.transform = global_transform
-			var intersecting_objs = space_state.intersect_shape(params)
-			
-			#Stun farmers
-			for result in intersecting_objs:
-				var obj = result["collider"]
-				if obj.has_method("_on_dug_under"):
-					obj._on_dug_under()
-			
-			if len(intersecting_objs) == 0:
+			if can_dive:
 				diving = true
 				anim_spr.visible = true
 				dive_sounds.play()

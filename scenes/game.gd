@@ -54,6 +54,10 @@ func spawn_farmer():
 func _ready():
 	randomize()
 	
+	# Make the navigation tilemap invisible without disabling its navigation mesh.
+	$Nav.visible = true
+	$Nav.modulate = Color.transparent
+	
 	var player = get_node("%Krot")
 	player.connect("deposited_crop", self, "_on_player_deposit_crop")
 
@@ -86,7 +90,7 @@ func _process(delta):
 		if len(farmers) < MAX_FARMERS and farmer_spawn_timer < 0.0:
 			spawn_farmer()
 			
-			if farmer_phase < 4:
+			if farmer_phase < 6:
 				farmer_spawn_timer = 15.0
 			elif farmer_phase < 12:
 				farmer_spawn_timer = 10.0
