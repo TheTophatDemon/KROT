@@ -68,6 +68,11 @@ func _on_bullet_hit(bullet):
 	if bullet.shooter != self:
 		change_state(State.STUMBLE)
 		stumble_timer = STUMBLE_TIME
+		
+# Called when the player attempts to dig out of the ground while underneath this farmer
+func _on_dug_under():
+	change_state(State.STUMBLE)
+	stumble_timer = STUMBLE_TIME
 			
 func shoot():
 	gun_sounds.play()

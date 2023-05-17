@@ -1,9 +1,12 @@
 Features
+- Hit points
+- Farmer stun noise
 - High score
 - Game instructions and credits
 - Music
 
 Tweaks
-- Digging player can knock over farmers
 - Pathfinding improvement
+- Make farmers spawn at specific points
 - Y sort issue??
+

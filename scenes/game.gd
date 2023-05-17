@@ -173,20 +173,21 @@ func spawn_farmer():
 			var farmer = PREFAB_FARMER.instance()
 			ysort.add_child(farmer)
 			farmer.position = pos
+			print("Farmer spawned")
 			break
 	
 func _ready():
-	randomize()
-	generate_map(64, 64)
-	place_obstacles()
+	#randomize()
+	#generate_map(64, 64)
+	#place_obstacles()
 	
 	#Set camera boundary to map boundary
-	var ground_rect = ground_tiles.get_used_rect()
-	var camera = get_node("%Camera")
-	camera.limit_left = ground_rect.position.x * ground_tiles.cell_size.x
-	camera.limit_top = ground_rect.position.y * ground_tiles.cell_size.y
-	camera.limit_right = ground_rect.end.x * ground_tiles.cell_size.x
-	camera.limit_bottom = ground_rect.end.y * ground_tiles.cell_size.y
+#	var ground_rect = ground_tiles.get_used_rect()
+#	var camera = get_node("%Camera")
+#	camera.limit_left = ground_rect.position.x * ground_tiles.cell_size.x
+#	camera.limit_top = ground_rect.position.y * ground_tiles.cell_size.y
+#	camera.limit_right = ground_rect.end.x * ground_tiles.cell_size.x
+#	camera.limit_bottom = ground_rect.end.y * ground_tiles.cell_size.y
 	
 	var player = get_node("%Krot")
 	player.connect("deposited_crop", self, "_on_player_deposit_crop")

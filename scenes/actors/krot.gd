@@ -113,10 +113,12 @@ func change_state(new_state:int):
 				anim_spr.visible = true
 				set_collision_layer_bit(Globals.COL_BIT_SURFACE, true)
 				set_collision_mask_bit(Globals.COL_BIT_HUMANS, true)
+				set_collision_mask_bit(Globals.COL_BIT_SOLIDS, true)
 			State.UNDERGROUND:
 				anim_spr.visible = false
 				set_collision_layer_bit(Globals.COL_BIT_SURFACE, false)
 				set_collision_mask_bit(Globals.COL_BIT_HUMANS, false)
+				set_collision_mask_bit(Globals.COL_BIT_SOLIDS, false)
 				max_speed = UNDERGROUND_WALK_SPEED
 				
 	if state != State.DYING: #Nobody can escape death.
@@ -140,20 +142,37 @@ func _process(delta):
 	if state != State.DYING:
 		#Diving in and out of underground
 		if Input.is_action_just_pressed("dive") and not diving and state != State.EATING: 
-			diving = true
-			anim_spr.visible = true
-			dive_sounds.play()
-			mound_particles.emitting = true
+			#Check if there is a farmer above the player
+			var space_state = get_world_2d().direct_space_state
 			
-			if state == State.CARRYING:
-				#Drop the crop
-				var crop = CROP_PREFAB.instance()
-				get_parent().add_child(crop)
-				crop.global_position = global_position
-				crop.rotate(randf() * PI * 2.0)
+			var params = Physics2DShapeQueryParameters.new()
+			params.shape_rid = $CollisionShape2D.shape
+			params.collide_with_bodies = true
+			params.collision_layer = (1 << Globals.COL_BIT_HUMANS) | (1 << Globals.COL_BIT_SOLIDS)
+			params.transform = global_transform
+			var intersecting_objs = space_state.intersect_shape(params)
 			
-			#Finish the dive after a time
-			var _err = get_tree().create_timer(DIVE_TIME).connect("timeout", self, "end_dive")
+			#Stun farmers
+			for result in intersecting_objs:
+				var obj = result["collider"]
+				if obj.has_method("_on_dug_under"):
+					obj._on_dug_under()
+			
+			if len(intersecting_objs) == 0:
+				diving = true
+				anim_spr.visible = true
+				dive_sounds.play()
+				mound_particles.emitting = true
+				
+				if state == State.CARRYING:
+					#Drop the crop
+					var crop = CROP_PREFAB.instance()
+					get_parent().add_child(crop)
+					crop.global_position = global_position
+					crop.rotate(randf() * PI * 2.0)
+				
+				#Finish the dive after a time
+				var _err = get_tree().create_timer(DIVE_TIME).connect("timeout", self, "end_dive")
 			
 		#Eating
 		if Input.is_action_pressed("eat") and state == State.CARRYING:
