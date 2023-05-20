@@ -14,6 +14,9 @@ onready var ysort = $YSort
 var seed_plant_timer:float = 999.0
 var farmer_spawn_timer:float = 0.0
 var farmer_phase:int = 0
+
+var high_score:int = 0
+var best_time:int = 0
 					
 func spawn_crops(density:float, random_growth:bool = false):
 	var test_circle = CircleShape2D.new()
@@ -37,6 +40,19 @@ func spawn_crops(density:float, random_growth:bool = false):
 				ysort.add_child(crop)
 				crop.position = w_pos
 
+func end_game():
+	# Update stats
+	high_score = max(high_score, get_node("%Krot").score)
+	best_time = max(best_time, floor(get_node("%Krot").life_time))
+	
+	# Save the high score
+	var config = ConfigFile.new()
+	config.set_value("player_stats", "high_score", high_score)
+	config.set_value("player_stats", "best_time", best_time)
+	config.save("user://scores.cfg")
+
+	get_tree().change_scene("res://scenes/title.tscn")
+
 # Places a farmer in a random off-screen position.			
 func spawn_farmer():
 	var spawners = get_tree().get_nodes_in_group(Globals.GROUP_SPAWNER)
@@ -50,6 +66,18 @@ func spawn_farmer():
 			print("Farmer spawned")
 			return
 	print("Spawn failed")
+	
+func _init():
+	# Read in high score and best time
+	var config = ConfigFile.new()
+	var err = config.load("user://scores.cfg")
+	if err != OK:
+		print("Could not load configuration file: ")
+		printerr(err)
+		return
+	high_score = config.get_value("player_stats", "high_score", 0)
+	best_time = config.get_value("player_stats", "best_time", 0)
+
 	
 func _ready():
 	randomize()

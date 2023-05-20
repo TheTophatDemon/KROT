@@ -123,11 +123,18 @@ texture = ExtResource( 4 )
 anims/RESET = SubResource( 4 )
 anims/fade_in = SubResource( 5 )
 
-[node name="Stats" type="Label" parent="DeathMessage"]
+[node name="Stats" type="RichTextLabel" parent="DeathMessage"]
 margin_top = 113.0
 margin_right = 235.0
-margin_bottom = 145.0
-custom_fonts/font = ExtResource( 5 )
+margin_bottom = 176.0
+custom_fonts/normal_font = ExtResource( 5 )
+bbcode_enabled = true
+bbcode_text = "[center]Score: 0
+[color=#FFFF00](Best: 0)[/color]
+Time: 0 seconds
+[color=#FFFF00](Best: 0)[/color][/center]"
 text = "Score: 0
-Time alive: 0s"
-align = 1
+(Best: 0)
+Time: 0 seconds
+(Best: 0)"
+scroll_active = false

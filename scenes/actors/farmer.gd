@@ -116,7 +116,7 @@ func _process(delta):
 	#Align sight to the player
 	var player = get_tree().get_nodes_in_group(Globals.GROUP_PLAYERS)[0]
 	target_in_sight = false	
-	if player.get_collision_layer_bit(Globals.COL_BIT_SURFACE):
+	if !player.is_dead() and player.get_collision_layer_bit(Globals.COL_BIT_SURFACE):
 		var diff = ((player.global_position + Vector2.UP * 16.0) - sight.global_position)
 		target_dist = diff.length()
 		var in_fov = abs(diff.angle_to(SPRITE_DIR_VECTORS[sprite_direction])) < HALF_FOV

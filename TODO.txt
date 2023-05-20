@@ -1,6 +1,6 @@
 Features
+- Pausing
 - Hit points
-- High score
 - Game instructions and credits
 - Music
 - Controller Support

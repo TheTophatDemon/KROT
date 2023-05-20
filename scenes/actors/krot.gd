@@ -116,6 +116,7 @@ func change_state(new_state:int):
 				emit_signal("die")
 				collision_layer = 0
 				collision_mask = 0
+				anim_spr.z_index = -1
 			State.DEFAULT:
 				anim_spr.visible = true
 				set_collision_layer_bit(Globals.COL_BIT_SURFACE, true)
@@ -229,6 +230,9 @@ func _process(delta):
 
 func is_carrying():
 	return state == State.CARRYING
+	
+func is_dead():
+	return state == State.DYING
 	
 func deposit_crop():
 	if state == State.CARRYING:
