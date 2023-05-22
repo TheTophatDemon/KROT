@@ -1,5 +1,6 @@
 Features
-- Hit points
 - Game instructions and credits
 - Music
 - Controller Support
+- Fences
+- Hit points (Do some user testing first)
