@@ -1,7 +1,5 @@
 Features
-- Pausing
 - Hit points
 - Game instructions and credits
 - Music
 - Controller Support
-- Leaderboard

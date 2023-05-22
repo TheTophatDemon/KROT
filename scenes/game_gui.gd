@@ -10,17 +10,22 @@ onready var hunger_meter = $HungerMeter
 onready var hunger_meter_anim = hunger_meter.get_node("AnimationPlayer")
 
 onready var death_msg = $DeathMessage
+onready var pause_msg = $PauseMessage
 onready var world = get_node("/root/World")
 
 var player = null
 
 func _ready():
 	death_msg.modulate.a = 0.0
+	pause_msg.visible = false
 	var _err = death_msg.get_node("AnimationPlayer").connect("animation_finished", self, "_on_death_animation_finished")
 	player = get_node("%Krot")
 	_err = player.connect("die", self, "_on_player_death")
+	rect_size = get_viewport_rect().size / 2.0
+	rect_position = get_viewport_rect().position - rect_size / 2.0
 
 func _on_death_animation_finished(_anim:String):
+	get_tree().paused = false
 	world.end_game()
 	
 func _process(delta):
@@ -35,5 +40,11 @@ func _on_player_death():
 	death_msg.get_node("AnimationPlayer").play("fade_in")
 	death_msg.get_node("Stats").bbcode_text = \
 		STATS_TEMPLATE % [player.score, world.high_score, floor(player.life_time), world.best_time]
-	rect_size = get_viewport_rect().size / 2.0
-	rect_position = get_viewport_rect().position - rect_size / 2.0
+	get_tree().paused = false
+	pause_msg.visible = false
+	
+func _input(event):
+	if event.is_action_pressed("ui_accept") and !death_msg.get_node("AnimationPlayer").is_playing():
+		# Pause the game.
+		get_tree().paused = !get_tree().paused
+		pause_msg.visible = get_tree().paused

@@ -40,11 +40,11 @@ func spawn_crops(density:float, random_growth:bool = false):
 				ysort.add_child(crop)
 				crop.position = w_pos
 
-func end_game():
-	# Update stats
+func update_stats():
 	high_score = max(high_score, get_node("%Krot").score)
 	best_time = max(best_time, floor(get_node("%Krot").life_time))
-	
+
+func end_game():
 	# Save the high score
 	var config = ConfigFile.new()
 	config.set_value("player_stats", "high_score", high_score)
@@ -88,6 +88,7 @@ func _ready():
 	
 	var player = get_node("%Krot")
 	player.connect("deposited_crop", self, "_on_player_deposit_crop")
+	player.connect("die", self, "update_stats")
 
 func _on_player_deposit_crop():
 	# Turn on the farmer spawning once the player deposits the first crop
