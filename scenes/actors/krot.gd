@@ -198,8 +198,8 @@ func _process(delta):
 	match state:
 		State.DEFAULT, State.CARRYING, State.UNDERGROUND:
 			input = Vector2(
-				int(Input.is_action_pressed("walk_east")) - int(Input.is_action_pressed("walk_west")),
-				int(Input.is_action_pressed("walk_south")) - int(Input.is_action_pressed("walk_north"))
+				(Input.get_action_strength("walk_east")) - (Input.get_action_strength("walk_west")),
+				(Input.get_action_strength("walk_south")) - (Input.get_action_strength("walk_north"))
 			).normalized()
 			if input.length_squared() > 0.0:
 				emit_signal("movement")

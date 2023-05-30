@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://scenes/title_screen.gd" type="Script" id=1]
 [ext_resource path="res://gfx/ui/game_title.png" type="Texture" id=2]
@@ -6,6 +6,8 @@
 [ext_resource path="res://gfx/grassy_tileset.tres" type="TileSet" id=4]
 [ext_resource path="res://scenes/actors/krot_dummy.tscn" type="PackedScene" id=5]
 [ext_resource path="res://scenes/objects/crop.tscn" type="PackedScene" id=6]
+[ext_resource path="res://gfx/ui/right_key.png" type="Texture" id=7]
+[ext_resource path="res://gfx/ui/left_key.png" type="Texture" id=8]
 
 [node name="TitleScreen" type="Control"]
 anchor_right = 1.0
@@ -107,6 +109,42 @@ margin_right = 1.0
 margin_bottom = 141.0
 rect_scale = Vector2( 2, 2 )
 texture = ExtResource( 2 )
+
+[node name="English" type="Label" parent="."]
+margin_left = 128.0
+margin_top = 482.0
+margin_right = 220.0
+margin_bottom = 515.0
+custom_fonts/font = ExtResource( 3 )
+text = "English"
+
+[node name="LeftKey" type="TextureRect" parent="English"]
+anchor_left = 0.5
+anchor_right = 0.5
+margin_left = -19.0
+margin_top = -37.0
+margin_right = 11.0
+margin_bottom = -16.0
+rect_scale = Vector2( 2, 2 )
+texture = ExtResource( 8 )
+
+[node name="Russki" type="Label" parent="."]
+margin_left = 586.0
+margin_top = 482.0
+margin_right = 678.0
+margin_bottom = 515.0
+custom_fonts/font = ExtResource( 3 )
+text = "Русский"
+
+[node name="RightKey" type="TextureRect" parent="Russki"]
+anchor_left = 0.5
+anchor_right = 0.5
+margin_left = -19.0
+margin_top = -37.0
+margin_right = 11.0
+margin_bottom = -16.0
+rect_scale = Vector2( 2, 2 )
+texture = ExtResource( 7 )
 
 [node name="RichTextLabel" type="RichTextLabel" parent="."]
 anchor_top = 1.0

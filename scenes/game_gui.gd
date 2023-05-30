@@ -1,10 +1,10 @@
 extends Control
 
-const STATS_TEMPLATE = \
-"[center]Score: %s\n" + \
-"[color=#FFFF00](Best: %s)[/color]\n" + \
-"Time: %s seconds\n" + \
-"[color=#FFFF00](Best: %s)[/color][/center]"
+var stats_template = \
+"[center]" + tr("SCORE") + ": %s\n" + \
+"[color=#FFFF00](" + tr("HISCORE") + ": %s)[/color]\n" + \
+tr("TIME") + ": %s " + tr("SECONDS") +"\n" + \
+"[color=#FFFF00](" + tr("HISCORE") + ": %s)[/color][/center]"
 
 onready var hunger_meter = $HungerMeter
 onready var hunger_meter_anim = hunger_meter.get_node("AnimationPlayer")
@@ -72,7 +72,7 @@ func _process(delta):
 func _on_player_death():
 	death_msg.get_node("AnimationPlayer").play("fade_in")
 	death_msg.get_node("Stats").bbcode_text = \
-		STATS_TEMPLATE % [player.score, world.high_score, floor(player.life_time), world.best_time]
+		stats_template % [player.score, world.high_score, floor(player.life_time), world.best_time]
 	get_tree().paused = false
 	pause_msg.visible = false
 	

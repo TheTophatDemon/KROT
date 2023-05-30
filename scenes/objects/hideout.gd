@@ -28,6 +28,6 @@ func _on_body_entered(body):
 		player.deposit_crop()
 		particles.emitting = true
 		score.visible = true
-		score.text = "Score: %s" % player.score
+		score.text = "%s: %s" % [tr("SCORE"), player.score]
 		score.get_node("AnimationPlayer").play("appear")
 		score_sound.play()

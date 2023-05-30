@@ -1,6 +1,4 @@
 Features
 - Music
-- Controller Support
 - Fences
-- Localization?
-- Hit points? (Do some user testing first)
+- Bonus enemy?
