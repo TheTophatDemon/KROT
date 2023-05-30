@@ -5,7 +5,7 @@ const CROP_PREFAB = preload("res://scenes/objects/crop_dropped.tscn")
 const WALK_THRESHOLD = 10.0
 const DIG_SOUND_FREQ = [0.1, 0.1] #Min, max
 const DIVE_TIME = 0.25
-const EAT_TIME = 1.5
+const EAT_TIME = 1.0
 const HUNGER_RATE = 1.0 / 60.0
 const HUNGER_DECREASE_RATE = 4.0 / 60.0 #The amount that hunger decreases after eating
 const OVERGROUND_WALK_SPEED = 160.0
@@ -45,6 +45,9 @@ var god_mode = false
 
 var score:int = 0
 var life_time:float = 0.0
+# The life time does not start until after the first deposit.
+# This present a player from getting a high score on time by not depositing anything, so no farmers appear.
+var first_deposit:bool = false
 
 var dive_check_shape:Shape2D
 
@@ -122,9 +125,6 @@ func change_state(new_state:int):
 				anim_spr.z_index = -1
 			State.DEFAULT:
 				anim_spr.visible = true
-				set_collision_layer_bit(Globals.COL_BIT_SURFACE, true)
-				set_collision_mask_bit(Globals.COL_BIT_HUMANS, true)
-				set_collision_mask_bit(Globals.COL_BIT_SOLIDS, true)
 			State.UNDERGROUND:
 				anim_spr.visible = false
 				set_collision_layer_bit(Globals.COL_BIT_SURFACE, false)
@@ -148,7 +148,7 @@ func _process(delta):
 	else:
 		hunger = 0.0
 	
-	life_time += delta
+	if first_deposit: life_time += delta
 	
 	if state != State.DYING:
 		#Diving in and out of underground
@@ -185,6 +185,12 @@ func _process(delta):
 					get_parent().add_child(crop)
 					crop.global_position = global_position
 					crop.rotate(randf() * PI * 2.0)
+					
+				if state == State.UNDERGROUND:
+					# The bits are restored here so that the mole can't go through obstacles on the surface while emerging
+					set_collision_layer_bit(Globals.COL_BIT_SURFACE, true)
+					set_collision_mask_bit(Globals.COL_BIT_HUMANS, true)
+					set_collision_mask_bit(Globals.COL_BIT_SOLIDS, true)
 				
 				#Finish the dive after a time
 				var _err = get_tree().create_timer(DIVE_TIME).connect("timeout", self, "end_dive")
@@ -245,6 +251,7 @@ func deposit_crop():
 	if state == State.CARRYING:
 		change_state(State.DEFAULT)
 		emit_signal("deposited_crop")
+		first_deposit = true
 		score += 1
 
 func _input(event):
