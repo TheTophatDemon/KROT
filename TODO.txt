@@ -1,6 +1,6 @@
 Features
-- Game instructions and credits
 - Music
 - Controller Support
 - Fences
-- Hit points (Do some user testing first)
+- Localization?
+- Hit points? (Do some user testing first)

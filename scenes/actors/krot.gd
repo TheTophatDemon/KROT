@@ -13,6 +13,9 @@ const UNDERGROUND_WALK_SPEED = 128.0
 
 signal die()
 signal deposited_crop()
+signal movement()
+signal eat()
+signal dive()
 
 onready var dig_particles = $DigParticles
 onready var mound_particles = $MoundParticles
@@ -32,7 +35,7 @@ enum State {
 }
 
 var diving = false
-var state = State.CARRYING
+var state = State.DEFAULT
 
 var dig_sound_timer = 0.0
 
@@ -174,6 +177,7 @@ func _process(delta):
 				anim_spr.visible = true
 				dive_sounds.play()
 				mound_particles.emitting = true
+				emit_signal("dive")
 				
 				if state == State.CARRYING:
 					#Drop the crop
@@ -187,6 +191,7 @@ func _process(delta):
 			
 		#Eating
 		if Input.is_action_pressed("eat") and state == State.CARRYING:
+			emit_signal("eat")
 			change_state(State.EATING)
 	
 	#Movement input
@@ -196,6 +201,8 @@ func _process(delta):
 				int(Input.is_action_pressed("walk_east")) - int(Input.is_action_pressed("walk_west")),
 				int(Input.is_action_pressed("walk_south")) - int(Input.is_action_pressed("walk_north"))
 			).normalized()
+			if input.length_squared() > 0.0:
+				emit_signal("movement")
 		_:
 			input = Vector2.ZERO
 	

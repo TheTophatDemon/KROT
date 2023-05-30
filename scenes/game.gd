@@ -122,8 +122,8 @@ func _process(delta):
 			if farmer_phase < 6:
 				farmer_spawn_timer = 15.0
 			elif farmer_phase < 12:
-				farmer_spawn_timer = 10.0
-			else:
 				farmer_spawn_timer = 20.0
+			else:
+				farmer_spawn_timer = 25.0
 			
 			farmer_phase += 1

@@ -7,3 +7,5 @@ const COL_BIT_SOLIDS = 5
 const GROUP_PLAYERS = "players"
 const GROUP_FARMERS = "farmers"
 const GROUP_SPAWNER = "spawner"
+
+var first_game:bool = true

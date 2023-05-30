@@ -112,10 +112,39 @@ texture = ExtResource( 2 )
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_top = -317.0
+margin_left = -3.0
+margin_top = -308.0
+margin_right = -3.0
+margin_bottom = -257.0
 custom_colors/font_color_shadow = Color( 0, 0, 0, 1 )
 custom_constants/shadow_offset_y = 2
 custom_fonts/normal_font = ExtResource( 3 )
 bbcode_enabled = true
-bbcode_text = "[center]Press [color=yellow]Enter[/color] to begin[/center]"
-text = "Press Enter to begin"
+bbcode_text = "[center]Press [color=yellow]Enter[/color] to start[/center]"
+text = "Press Enter to start"
+
+[node name="Copyright" type="Label" parent="."]
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 6.0
+margin_top = -36.0
+margin_right = -455.0
+margin_bottom = 15.0
+custom_colors/font_color_shadow = Color( 0, 0, 0, 1 )
+custom_constants/shadow_offset_y = 2
+custom_fonts/font = ExtResource( 3 )
+text = " © 2023 The Tophat Demon"
+
+[node name="Website" type="Label" parent="."]
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 515.0
+margin_top = -37.0
+margin_right = 58.0
+margin_bottom = 14.0
+custom_colors/font_color_shadow = Color( 0, 0, 0, 1 )
+custom_constants/shadow_offset_y = 2
+custom_fonts/font = ExtResource( 3 )
+text = "www.tophatdemon.com"

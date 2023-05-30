@@ -12,6 +12,8 @@ config_version=4
 
 config/name="Krot"
 run/main_scene="res://scenes/title.tscn"
+boot_splash/image="res://gfx/ui/splash_screen.png"
+boot_splash/bg_color=Color( 0, 0, 0, 1 )
 config/icon="res://icon.png"
 
 [autoload]
