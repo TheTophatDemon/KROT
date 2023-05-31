@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=11 format=2]
 
 [ext_resource path="res://scenes/title_screen.gd" type="Script" id=1]
 [ext_resource path="res://gfx/ui/game_title.png" type="Texture" id=2]
@@ -6,8 +6,40 @@
 [ext_resource path="res://gfx/grassy_tileset.tres" type="TileSet" id=4]
 [ext_resource path="res://scenes/actors/krot_dummy.tscn" type="PackedScene" id=5]
 [ext_resource path="res://scenes/objects/crop.tscn" type="PackedScene" id=6]
-[ext_resource path="res://gfx/ui/right_key.png" type="Texture" id=7]
-[ext_resource path="res://gfx/ui/left_key.png" type="Texture" id=8]
+[ext_resource path="res://gfx/ui/russian_flag.png" type="Texture" id=7]
+[ext_resource path="res://gfx/ui/american_flag.png" type="Texture" id=8]
+
+[sub_resource type="Animation" id=1]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/path = NodePath("PressStart:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ true ]
+}
+
+[sub_resource type="Animation" id=2]
+resource_name = "blink"
+loop = true
+step = 0.05
+tracks/0/type = "value"
+tracks/0/path = NodePath("PressStart:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.7, 1 ),
+"transitions": PoolRealArray( 1, 1, 1 ),
+"update": 1,
+"values": [ true, false, true ]
+}
 
 [node name="TitleScreen" type="Control"]
 anchor_right = 1.0
@@ -110,43 +142,55 @@ margin_bottom = 141.0
 rect_scale = Vector2( 2, 2 )
 texture = ExtResource( 2 )
 
-[node name="English" type="Label" parent="."]
-margin_left = 128.0
-margin_top = 482.0
-margin_right = 220.0
-margin_bottom = 515.0
-custom_fonts/font = ExtResource( 3 )
-text = "English"
+[node name="English" type="RichTextLabel" parent="."]
+margin_left = 17.0
+margin_top = 480.0
+margin_right = 178.0
+margin_bottom = 559.0
+rect_clip_content = false
+custom_fonts/mono_font = ExtResource( 3 )
+custom_fonts/normal_font = ExtResource( 3 )
+bbcode_enabled = true
+bbcode_text = "[center]English
+Press [color=yellow]E[/color][/center]"
+text = "English
+Press E"
 
-[node name="LeftKey" type="TextureRect" parent="English"]
-anchor_left = 0.5
-anchor_right = 0.5
-margin_left = -19.0
-margin_top = -37.0
-margin_right = 11.0
-margin_bottom = -16.0
+[node name="AmericanFlag" type="TextureRect" parent="English"]
+anchor_left = 0.484
+anchor_top = 0.237
+anchor_right = 0.484
+anchor_bottom = 0.237
+margin_left = -31.924
+margin_top = -72.723
+margin_right = 0.0759964
+margin_bottom = -40.723
 rect_scale = Vector2( 2, 2 )
 texture = ExtResource( 8 )
 
-[node name="Russki" type="Label" parent="."]
-margin_left = 586.0
-margin_top = 482.0
-margin_right = 678.0
-margin_bottom = 515.0
-custom_fonts/font = ExtResource( 3 )
-text = "Русский"
+[node name="Russian" type="RichTextLabel" parent="."]
+margin_left = 20.0
+margin_top = 480.0
+margin_right = 181.0
+margin_bottom = 559.0
+rect_clip_content = false
+custom_fonts/mono_font = ExtResource( 3 )
+custom_fonts/normal_font = ExtResource( 3 )
+bbcode_enabled = true
+bbcode_text = "[center]Русский
+Нажмите [color=yellow]R[/color][/center]"
+text = "Русский
+Нажмите R"
 
-[node name="RightKey" type="TextureRect" parent="Russki"]
-anchor_left = 0.5
-anchor_right = 0.5
-margin_left = -19.0
-margin_top = -37.0
-margin_right = 11.0
-margin_bottom = -16.0
+[node name="RussianFlag" type="TextureRect" parent="Russian"]
+margin_left = 45.0
+margin_top = -57.0
+margin_right = 77.0
+margin_bottom = -25.0
 rect_scale = Vector2( 2, 2 )
 texture = ExtResource( 7 )
 
-[node name="RichTextLabel" type="RichTextLabel" parent="."]
+[node name="PressStart" type="RichTextLabel" parent="."]
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -186,3 +230,7 @@ custom_colors/font_color_shadow = Color( 0, 0, 0, 1 )
 custom_constants/shadow_offset_y = 2
 custom_fonts/font = ExtResource( 3 )
 text = "www.tophatdemon.com"
+
+[node name="Blinker" type="AnimationPlayer" parent="."]
+anims/RESET = SubResource( 1 )
+anims/blink = SubResource( 2 )

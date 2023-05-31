@@ -2,3 +2,5 @@
 addons
 .aseprite_wizard_history
 builds/web
+*.zip
+builds
