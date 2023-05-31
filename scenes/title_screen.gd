@@ -1,7 +1,10 @@
 extends Control
 	
 func _ready():
-	$RichTextLabel.bbcode_text = tr("ENTER")
+	$Blinker.play("blink")
+	$PressStart.bbcode_text = tr("ENTER")
+	$English.visible = false
+	$Russian.visible = true
 	
 func start_game():
 	get_tree().change_scene("res://scenes/game.tscn")
@@ -9,9 +12,12 @@ func start_game():
 func _input(event):
 	if event.is_action_pressed("ui_accept"):
 			start_game()
-	if event.is_action_pressed("walk_east"):
+	if event.is_action_pressed("russian"):
 		TranslationServer.set_locale("ru")
-		$RichTextLabel.bbcode_text = tr("ENTER")
-	elif event.is_action_pressed("walk_west"):
+		$English.visible = true
+		$Russian.visible = false
+	elif event.is_action_pressed("english"):
 		TranslationServer.set_locale("en")
-		$RichTextLabel.bbcode_text = tr("ENTER")
+		$Russian.visible = true
+		$English.visible = false
+	$PressStart.bbcode_text = tr("ENTER")
