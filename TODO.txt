@@ -1,7 +1,3 @@
 Features
 - Music
 - Bonus enemy?
-Tweaks
-- Make hunger less severe at beginning?
-- Clarify picking up corn in the guide
-- Remove farmer from diving guide?
