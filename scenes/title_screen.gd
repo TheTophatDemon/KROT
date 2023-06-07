@@ -3,8 +3,13 @@ extends Control
 func _ready():
 	$Blinker.play("blink")
 	$PressStart.bbcode_text = tr("ENTER")
-	$English.visible = false
-	$Russian.visible = true
+	match TranslationServer.get_locale().substr(0, 2):
+		"en":
+			$English.visible = false
+			$Russian.visible = true
+		"ru":
+			$English.visible = true
+			$Russian.visible = false
 	
 func start_game():
 	get_tree().change_scene("res://scenes/game.tscn")
