@@ -259,7 +259,7 @@ func deposit_crop():
 		score += 1
 
 func _input(event):
-	if event.is_action_pressed("cheat"):
+	if event.is_action_pressed("cheat") and OS.is_debug_build():
 		god_mode = !god_mode
 		if god_mode:
 			anim_spr.modulate = Color.yellow
