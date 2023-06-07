@@ -7,7 +7,7 @@ const DIG_SOUND_FREQ = [0.1, 0.1] #Min, max
 const DIVE_TIME = 0.25
 const EAT_TIME = 1.0
 const HUNGER_RATE = 1.0 / 60.0
-const HUNGER_DECREASE_RATE = 4.0 / 60.0 #The amount that hunger decreases after eating
+const HUNGER_DECREASE_RATE = 6.0 / 60.0 #The amount that hunger decreases after eating
 const OVERGROUND_WALK_SPEED = 160.0
 const UNDERGROUND_WALK_SPEED = 128.0
 

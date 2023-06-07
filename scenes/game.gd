@@ -88,13 +88,19 @@ func _ready():
 	
 	var player = get_node("%Krot")
 	player.connect("deposited_crop", self, "_on_player_deposit_crop")
-	player.connect("die", self, "update_stats")
+	player.connect("die", self, "_on_player_die")
+
+func _on_player_die():
+	update_stats()
+	$Music.start_fade()
 
 func _on_player_deposit_crop():
 	# Turn on the farmer spawning once the player deposits the first crop
 	if farmer_phase <= 0:
 		farmer_phase = 1
 		farmer_spawn_timer = 0.0
+		# Also start the music
+		$Music.play()
 
 func get_random_soil_tile():
 	var tiles = soil_tiles.get_used_cells()
