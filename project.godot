@@ -27,7 +27,7 @@ window/size/resizable=false
 
 [editor_plugins]
 
-enabled=PoolStringArray(  )
+enabled=PoolStringArray( "res://addons/AsepriteWizard/plugin.cfg" )
 
 [gui]
 
@@ -132,6 +132,7 @@ russian={
 2d_physics/layer_4="Humans"
 2d_physics/layer_5="Surface"
 2d_physics/layer_6="Solids"
+2d_physics/layer_7="Hazard"
 
 [locale]
 

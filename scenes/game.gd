@@ -2,6 +2,7 @@ extends Node2D
 
 const PREFAB_CROP = preload("res://scenes/objects/crop.tscn")
 const PREFAB_FARMER = preload("res://scenes/actors/farmer.tscn")
+const PREFAB_THOMAS = preload("res://scenes/actors/thomas.tscn")
 
 const SEED_PLANT_INTERVAL = 5
 
@@ -14,6 +15,7 @@ onready var ysort = $YSort
 var seed_plant_timer:float = 999.0
 var farmer_spawn_timer:float = 0.0
 var farmer_phase:int = 0
+var thomas_spawned:bool = false
 
 var high_score:int = 0
 var best_time:int = 0
@@ -53,17 +55,22 @@ func end_game():
 
 	get_tree().change_scene("res://scenes/title.tscn")
 
-# Places a farmer in a random off-screen position.			
-func spawn_farmer():
+# Places an enemy in a random off-screen position.			
+func spawn_enemy():
 	var spawners = get_tree().get_nodes_in_group(Globals.GROUP_SPAWNER)
 	spawners.shuffle()
 	
 	for spawner in spawners:
 		if spawner.can_spawn():
-			var farmer = PREFAB_FARMER.instance()
-			ysort.add_child(farmer)
-			farmer.global_position = spawner.global_position
-			print("Farmer spawned")
+			var prefab = PREFAB_FARMER
+			# Spawn Thomas in a later round of the game
+			if !thomas_spawned and farmer_phase >= 20:
+				prefab = PREFAB_THOMAS
+				thomas_spawned = true
+			var enemy = prefab.instance()
+			ysort.add_child(enemy)
+			enemy.global_position = spawner.global_position
+			print("Enemy spawned. Phase: ", farmer_phase)
 			return
 	print("Spawn failed")
 	
@@ -123,7 +130,7 @@ func _process(delta):
 		farmer_spawn_timer -= delta
 		var farmers = get_tree().get_nodes_in_group(Globals.GROUP_FARMERS)
 		if len(farmers) < MAX_FARMERS and farmer_spawn_timer < 0.0:
-			spawn_farmer()
+			spawn_enemy()
 			
 			if farmer_phase < 6:
 				farmer_spawn_timer = 15.0

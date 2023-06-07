@@ -1,2 +1,2 @@
-Features
-- Bonus enemy (Pissed off Thomas)
+- Play testing
+- Release

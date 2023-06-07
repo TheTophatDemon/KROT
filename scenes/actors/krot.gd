@@ -96,6 +96,10 @@ func _on_bullet_hit(_bullet):
 	if !god_mode and !diving:
 		change_state(State.DYING)
 		
+func _on_killzone_enter(_killzone):
+	if !god_mode and !diving:
+		change_state(State.DYING)
+		
 func start_eating():
 	eat_sound.play()
 	eat_particles.emitting = true

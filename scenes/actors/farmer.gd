@@ -74,6 +74,10 @@ func _on_bullet_hit(bullet):
 func _on_dug_under():
 	change_state(State.STUMBLE)
 	stumble_timer = STUMBLE_TIME
+	
+func _on_killzone_enter(_killzone):
+	change_state(State.STUMBLE)
+	stumble_timer = STUMBLE_TIME
 			
 func shoot():
 	gun_sounds.play()

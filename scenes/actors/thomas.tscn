@@ -1,0 +1,106 @@
+[gd_scene load_steps=14 format=2]
+
+[ext_resource path="res://gfx/smoke.png" type="Texture" id=1]
+[ext_resource path="res://scenes/actors/thomas.gd" type="Script" id=2]
+[ext_resource path="res://gfx/thomas_south.res" type="SpriteFrames" id=3]
+[ext_resource path="res://sounds/chug2.wav" type="AudioStream" id=4]
+[ext_resource path="res://sounds/chug1.wav" type="AudioStream" id=5]
+[ext_resource path="res://sounds/chug3.wav" type="AudioStream" id=6]
+[ext_resource path="res://scenes/killzone.gd" type="Script" id=7]
+[ext_resource path="res://random_sound.gd" type="Script" id=8]
+
+[sub_resource type="CircleShape2D" id=14]
+
+[sub_resource type="Curve" id=15]
+max_value = 4.0
+_data = [ Vector2( 0, 0.345455 ), 0.0, 0.0, 0, 0, Vector2( 1, 2.81818 ), 0.0, 0.0, 0, 0 ]
+
+[sub_resource type="Gradient" id=16]
+colors = PoolColorArray( 1, 1, 1, 1, 0, 0, 0, 0 )
+
+[sub_resource type="RectangleShape2D" id=17]
+extents = Vector2( 19, 6 )
+
+[sub_resource type="RectangleShape2D" id=18]
+extents = Vector2( 6.5, 14.5 )
+
+[node name="Thomas" type="KinematicBody2D"]
+collision_layer = 9
+collision_mask = 52
+script = ExtResource( 2 )
+
+[node name="AnimatedSprite" type="AnimatedSprite" parent="."]
+position = Vector2( 0, -30 )
+frames = ExtResource( 3 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2( 0, -12 )
+shape = SubResource( 14 )
+
+[node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
+path_desired_distance = 16.0
+target_desired_distance = 64.0
+path_max_distance = 10.0
+avoidance_enabled = true
+neighbor_dist = 100.0
+time_horizon = 1.0
+
+[node name="SmokerAnchor" type="Node2D" parent="."]
+position = Vector2( 0, -52 )
+
+[node name="Smoker" type="CPUParticles2D" parent="SmokerAnchor"]
+emitting = false
+amount = 24
+local_coords = false
+texture = ExtResource( 1 )
+emission_shape = 2
+emission_rect_extents = Vector2( 6, 0 )
+direction = Vector2( 0, -1 )
+spread = 13.62
+initial_velocity = 110.09
+linear_accel = -36.7
+radial_accel = -100.0
+radial_accel_random = 1.0
+angle = 720.0
+angle_random = 1.0
+scale_amount_curve = SubResource( 15 )
+color_ramp = SubResource( 16 )
+
+[node name="ChugSounds" type="Node2D" parent="."]
+script = ExtResource( 8 )
+
+[node name="Chug1" type="AudioStreamPlayer2D" parent="ChugSounds"]
+stream = ExtResource( 5 )
+attenuation = 7.20999
+bus = "SFX"
+
+[node name="Chug2" type="AudioStreamPlayer2D" parent="ChugSounds"]
+stream = ExtResource( 4 )
+attenuation = 7.20999
+bus = "SFX"
+
+[node name="Chug3" type="AudioStreamPlayer2D" parent="ChugSounds"]
+stream = ExtResource( 6 )
+attenuation = 7.20999
+bus = "SFX"
+
+[node name="KillZone" type="Area2D" parent="."]
+collision_layer = 64
+collision_mask = 24
+script = ExtResource( 7 )
+
+[node name="south" type="CollisionShape2D" parent="KillZone"]
+position = Vector2( 0, -6 )
+shape = SubResource( 17 )
+
+[node name="north" type="CollisionShape2D" parent="KillZone"]
+position = Vector2( 0, -28 )
+shape = SubResource( 17 )
+
+[node name="east" type="CollisionShape2D" parent="KillZone"]
+position = Vector2( 25, -17.5 )
+shape = SubResource( 18 )
+
+[node name="west" type="CollisionShape2D" parent="KillZone"]
+position = Vector2( -25, -17 )
+shape = SubResource( 18 )
