@@ -132,7 +132,9 @@ func _process(delta):
 		if len(farmers) < MAX_FARMERS and farmer_spawn_timer < 0.0:
 			spawn_enemy()
 			
-			if farmer_phase < 6:
+			if farmer_phase < 2:
+				farmer_spawn_timer = 5.0
+			elif farmer_phase < 6:
 				farmer_spawn_timer = 15.0
 			elif farmer_phase < 12:
 				farmer_spawn_timer = 20.0

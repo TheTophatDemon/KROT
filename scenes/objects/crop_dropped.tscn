@@ -123,7 +123,6 @@ harvested = true
 
 [node name="AnimatedSprite" parent="." index="1"]
 animation = "harvested"
-frame = 1
 playing = true
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." index="2"]

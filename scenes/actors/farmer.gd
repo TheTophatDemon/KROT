@@ -23,6 +23,7 @@ enum State {
 onready var agent = $NavigationAgent2D
 onready var sight = $Sight
 onready var exclam_anim = $Exclamation/AnimationPlayer
+onready var vis_detector = $VisibilityNotifier2D
 
 onready var alert_sound = $AlertSound
 onready var gun_sounds = $GunSounds
@@ -159,7 +160,7 @@ func _process(delta):
 			pursue_target(delta)
 			if target_dist < SHOOT_DISTANCE:
 				shoot_timer -= delta
-				if shoot_timer < 0.0 and target_in_sight:
+				if shoot_timer < 0.0 and target_in_sight and vis_detector.is_on_screen():
 					shoot_timer = rand_range(1.0, 2.0)
 					change_state(State.SHOOT)
 					#Shoot bullets after some time
